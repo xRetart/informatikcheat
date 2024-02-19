@@ -8,13 +8,19 @@ object enabledCheats {
     private var table: MutableMap<CheatKind, Boolean> = mutableMapOf(
             CheatKind.AUTO_SPRINT to false,
             CheatKind.AUTO_EAT to false,
+            CheatKind.AUTO_SOUP to false,
+            CheatKind.AUTO_POTION to false,
+            CheatKind.KILL_AURA to false,
+            CheatKind.ANTI_AFK to false,
+            CheatKind.XRAY to false,
+            CheatKind.NO_CLIP to false,
     )
     fun toggle(cheat: CheatKind, context: CommandContext<ServerCommandSource>): Int {
         val status = table[cheat]!!
-        val action = if (status) "enable" else "disable"
-        table[cheat] = !(status)
+        val action = if (status) "disable" else "enable"
+        table[cheat] = !status
 
-        context.source.sendFeedback({ Text.literal("$action $cheat") }, false)
+        context.source.sendFeedback({ Text.literal("$action $cheat\n") }, false)
         return 1
     }
     fun list(context: CommandContext<ServerCommandSource>): Int {
@@ -22,7 +28,7 @@ object enabledCheats {
         for ((kind, status) in table) {
             tableString.append("\n$kind : $status")
         }
-        context.source.sendFeedback({ Text.literal(tableString.toString()) }, false)
+        context.source.sendFeedback({ Text.literal(tableString.toString() + '\n') }, false)
         return 1
     }
 }
