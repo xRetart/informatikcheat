@@ -7,6 +7,7 @@ import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.network.ClientPlayerInteractionManager
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.util.Hand
+import net.minecraft.util.math.Vec3d
 
 
 class AntiFallDamage(override var isEnabled: Boolean) : Feature {
@@ -29,6 +30,7 @@ class AntiFallDamage(override var isEnabled: Boolean) : Feature {
     }
 
     private fun cleanup(player: ClientPlayerEntity, interactionManager: ClientPlayerInteractionManager) {
+        player.pitch = 90f
         interactionManager.interactItem(player, Hand.MAIN_HAND)
         player.swingHand(Hand.MAIN_HAND)
         player.inventory.selectedSlot = previouslySelected!!
@@ -46,7 +48,7 @@ class AntiFallDamage(override var isEnabled: Boolean) : Feature {
         val bucketSlot = findInHotbar(player.inventory, ItemID.WATER_BUCKET) ?: return
 
         val groundDistance = groundDistance(player, world)
-        if (player.fallDistance > player.safeFallDistance && groundDistance < 2) {
+        if (player.fallDistance >= player.safeFallDistance && groundDistance < 2) {
             previouslySelected = player.inventory.selectedSlot
             player.inventory.selectedSlot = bucketSlot
 
@@ -54,6 +56,8 @@ class AntiFallDamage(override var isEnabled: Boolean) : Feature {
             player.pitch = 90f
             interactionManager.interactItem(player, Hand.MAIN_HAND)
             player.swingHand(Hand.MAIN_HAND)
+
+            player.velocity = Vec3d(.0, player.velocity.y, .0)
         }
     }
 

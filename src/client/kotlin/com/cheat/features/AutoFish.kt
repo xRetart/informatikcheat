@@ -14,8 +14,10 @@ class AutoFish(override var isEnabled: Boolean) : Feature {
             if (player.fishHook == null) {
                 interactionManager.interactItem(player, Hand.MAIN_HAND)
             } else {
-                player.fishHook!!.hookedEntity?.let {
-                    interactionManager.interactItem(player, Hand.MAIN_HAND)
+                player.fishHook!!.dataTracker.changedEntries?.forEach { event ->
+                    if (event.id == 9) {
+                        interactionManager.interactItem(player, Hand.MAIN_HAND)
+                    }
                 }
             }
         }

@@ -16,11 +16,13 @@ fun menu(client: MinecraftClient): Int {
 }
 
 val features: MutableMap<String, Feature> = mutableMapOf(
-    "AutoSprint" to AutoSprint(false),
+    "PermaSprint" to PermaSprint(false),
+    "PermaWalk" to PermaWalk(false),
     "AutoEat" to AutoEat(false),
     "AutoHeal" to AutoHeal(false),
-    "AutoLoot" to AutoLoot(false),
     "AutoFish" to AutoFish(false),
+    "SwitchTool" to SwitchTool(false),
+    "InstantLoot" to InstantLoot(false),
     "KillAura" to KillAura(false),
     "AntiFallDamage" to AntiFallDamage(false),
     "Fly" to Fly(false),

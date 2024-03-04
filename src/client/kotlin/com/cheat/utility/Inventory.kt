@@ -8,7 +8,5 @@ fun findInHotbar(inventory: PlayerInventory, itemId: ItemID): Int? {
     val stack = ItemStack(Item.byRawId(itemId.id))
     val slot = inventory.getSlotWithStack(stack)
 
-    println("searching $itemId with $stack found $slot")
-
     return if (slot in 0..8) slot else null
 }

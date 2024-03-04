@@ -13,16 +13,18 @@ class AutoHeal(override var isEnabled: Boolean) : Feature {
     override val description =
         "Du heilst dich automatisch mit einem Goldapfel in deiner Hotbar, wenn du ${threshold.toFloat() / 2.0} Herzen oder weniger hast."
 
-    private var previouslySelectedSlot: Int? = null
+    private var previouslySelectedSlot = -1
+    private var healing = false
 
     override fun onTick(client: MinecraftClient) {
         val player = client.player ?: return
 
-        if (previouslySelectedSlot != null) {
-            player.inventory.selectedSlot = previouslySelectedSlot!!
+        val regenerating = player.hasStatusEffect(StatusEffects.REGENERATION)
+        if (healing && regenerating) {
+            player.inventory.selectedSlot = previouslySelectedSlot
             client.options.useKey.isPressed = false
-            previouslySelectedSlot = null
-        } else if (isLow(player) && !player.hasStatusEffect(StatusEffects.REGENERATION)) {
+            healing = false
+        } else if (!healing && isLow(player) && !regenerating) {
             heal(player, client.options)
         }
     }
@@ -37,6 +39,7 @@ class AutoHeal(override var isEnabled: Boolean) : Feature {
         previouslySelectedSlot = player.inventory.selectedSlot
         player.inventory.selectedSlot = slot
         options.useKey.isPressed = true
+        healing = true
     }
 
     private fun isLow(player: PlayerEntity): Boolean {

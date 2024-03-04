@@ -5,7 +5,7 @@ import net.minecraft.screen.GenericContainerScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.screen.slot.SlotActionType
 
-class AutoLoot(override var isEnabled: Boolean) : Feature {
+class InstantLoot(override var isEnabled: Boolean) : Feature {
     override val description = "Du nimmst automatisch alle Gegenstände aus Kisten, die du öffnest."
 
     override fun onTick(client: MinecraftClient) {
