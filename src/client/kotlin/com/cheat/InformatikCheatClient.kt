@@ -10,11 +10,7 @@ import net.minecraft.client.util.InputUtil
 import org.lwjgl.glfw.GLFW
 
 
-fun menu(client: MinecraftClient): Int {
-    client.setScreen(MenuScreen())
-    return 1
-}
-
+// eine HashMap die den Namen eines Features einer globalen (an den Client gebundenen) Instanz des Features zuordnet
 val features: MutableMap<String, Feature> = mutableMapOf(
     "PermaSprint" to PermaSprint(false),
     "PermaWalk" to PermaWalk(false),
@@ -28,30 +24,37 @@ val features: MutableMap<String, Feature> = mutableMapOf(
     "Fly" to Fly(false),
 )
 
+// Hauptklasse, die Funktion für den Einstiegspunkt (`onInitializeClient`)
+// und an den Client gebundene Daten (Tastenbelegung für das Menu) beinhaltet
 object InformatikCheatClient : ClientModInitializer {
+    // Tastenbelegung um das Cheat Menu zu Öffnen
     private val menuKey: KeyBinding = KeyBindingHelper.registerKeyBinding(
         KeyBinding(
-            "Open Cheat Menu",
+            "Öffne das Cheat Menu",  // Beschreibung
             InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_U,
-            "category.cheat.test",
+            GLFW.GLFW_KEY_U,  // Default Wert = U
+            "category.cheat.menu",  // interne Kategorie ID
         )
     )
 
+    // Funktion, die direkt nach dem Start des Spiels ausgeführt wird (der Einstiegspunkt)
     override fun onInitializeClient() {
-        registerEvents()
-        initializeFeatures()
+        registerMenu()
+        registerFeatures()
     }
 
-    private fun registerEvents() {
+    // registriert bei der API, die Tastenbelegung für das Menu
+    private fun registerMenu() {
+        // Nach jedem Tick (kleinste Zeiteinheit im Spiel) wird die gegebene Funktion ausgeführt
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { client: MinecraftClient ->
-            if (menuKey.wasPressed()) {
-                menu(client)
+            if (menuKey.wasPressed()) {  // Wurde die Taste, auf die das Menu belegt wurde, gedrückt?
+                client.setScreen(MenuScreen())  // Setzte das aktuelle Menu (Screen) auf das Menu (durch MenuScreen definiert)
             }
         })
     }
 
-    private fun initializeFeatures() {
+    // registriert jedes einzelne in der variable `features` definierte Feature
+    private fun registerFeatures() {
         for (feature in features) {
             feature.value.register()
         }
